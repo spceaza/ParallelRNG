@@ -1,11 +1,14 @@
 #pragma once
 
+#include <iostream>
+
 class ParallelRNG
 {
   private:
     static ParallelRNG* _instance;
     int* g_seed;
     int zero;
+    int threads;
 
     ParallelRNG( int size, int seed = 0 );
 

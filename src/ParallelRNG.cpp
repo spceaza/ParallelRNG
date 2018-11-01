@@ -4,8 +4,10 @@ ParallelRNG* ParallelRNG::_instance = 0;
 
 ParallelRNG::ParallelRNG( int size, int seed )
 {
-  zero = seed;
-  g_seed = new int[size];
+  zero    = seed;
+  threads = size;
+  g_seed  = new int[size];
+
   for( int i = seed; i < ( seed + size ); ++i )
     g_seed[i - seed] = i;
 }
@@ -20,6 +22,7 @@ ParallelRNG* ParallelRNG::instance( int size, int seed )
 
 int ParallelRNG::PseudoRand( int& ind, int min, int max )
 {
+  std::cout << "ind/threads: " << ind << "/" << threads << std::endl;
   g_seed[ind] = ( 214013 * g_seed[ind] + 2531011 );
   return min + ( ( ( g_seed[ind] >> 16 ) & 0x7FFF ) % ( 1 + max - min ) );
 }
@@ -32,9 +35,10 @@ int ParallelRNG::PseudoRand( int min, int max )
 
 void ParallelRNG::Reset( int size, int seed = 0 )
 {
-  zero = seed;
   delete[] g_seed;
-  g_seed = new int[size];
+  zero    = seed;
+  threads = size;
+  g_seed  = new int[size];
   for( int i = seed; i < seed + size; ++i )
     g_seed[i - seed] = i;
 }
